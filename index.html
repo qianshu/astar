@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>A*</title>
+		<script src="http://oss.aliyuncs.com/bigbow/static/jquery.js"></script>
+		<script src="js/element.js"></script>
+		<script src="js/createElements.js"></script>
+		<script src="js/path.js"></script>
+		<style>
+			.item {
+				position: absolute;
+				border: 1px solid #000;
+				cursor: pointer;
+				height: 30px;
+				width: 30px;
+			}
+			.item:hover {
+				cursor: point;
+			}
+			.status-0 {
+				background: #eee;
+			}
+			.status-3 {
+				background: yellow;
+			}
+			.status-start {
+				background: green;
+			}
+			.status-end {
+				background: red;
+			}
+			.status-path {
+				background: #000;
+			}
+			#J-container {
+				border: 1px solid #000;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>A*算法</h1>
+		<div id="J-container">
+
+		</div>
+	</body>
+	<script>
+		/* 初始化面板参数开始 */
+		var row = 20, col = 20, itemWidth = 30, borderWidth = 1, containerId = "J-container";
+		/* 初始化面板参数借宿 */
+		/* 初始化面板开始 */
+		var jContainer = $("#" + containerId);
+		jContainer.css("position", "relative");
+		var boxWidth = itemWidth + 2 * borderWidth, boxHeight = itemWidth + 2 * borderWidth;
+		jContainer.width(boxWidth * row);
+		jContainer.height(boxHeight * col);
+		var elements = createElements(row, col, {
+			afterCreate : function() {
+				if (Math.random() * 10 > 9) {
+					this.setStatus(3);
+				}
+			}
+		});
+		for (var i = 0; i < elements.length; i++) {
+			for (var j = 0; j < elements[i].length; j++) {
+				var me = elements[i][j];
+				var jItem = $("<div id=" + me + " class=\"item status-" + elements[i][j].getStatus() + "\"></div>");
+				jItem.css({
+					left : boxWidth * j,
+					top : boxHeight * i
+				});
+				jContainer.append(jItem);
+			}
+		}
+		/* 初始化面板结束 */
+		var startElement, endElement, elementCache = [], calculatePathSwitch = false;
+		$("#J-container").delegate(".item", "click", function(e) {
+			var id = e.target.id;
+			var coordinate = id.split('-'), x = coordinate[2], y = coordinate[3];
+			if (elements[x][y].getStatus() > 0) {
+				alert("不是有效的起点和终点！");
+				return;
+			}
+			if (startElement) {
+				endElement = elements[x][y];
+			} else {
+				startElement = elements[x][y];
+				//todo:如果是第一个选中的元素，则显示可到达的地方
+				if (!calculatePathSwitch) {
+					$("#" + startElement).addClass("status-start");
+				}
+			}
+			if (startElement && endElement) {
+				elementCache.push([startElement, endElement]);
+				if (!calculatePathSwitch) {
+					calculatePathSwitch = true;
+					calculatePath();
+				}
+				startElement = endElement = null;
+			}
+		});
+
+		var calculatePath = function() {
+			setTimeout(function() {
+				if (!elementCache.length) {
+					calculatePathSwitch = false;
+					return;
+				}
+				//获取缓存内要寻找路径起点和终点数组
+				var elArr = elementCache.shift();
+				var startEl = elArr[0];
+				var endEl = elArr[1];
+				var jStartEl = $("#" + startEl);
+				var jEndEl = $("#" + endEl)
+				jStartEl.addClass("status-start");
+				jEndEl.addClass("status-end");
+
+				//获取起点和重点的路径
+				var elements = getPath(startEl, endEl)[endEl];
+				if (!elements.length) {
+					calculatePath();
+				}
+				var nearElement, index = 0;
+				var roam = function() {
+					nearElement = elements[index];
+					if (nearElement) {
+						var jNearElement = $("#" + nearElement);
+						jNearElement.css({
+							"opacity" : 0.3
+						});
+						if (nearElement != endEl) {
+							jNearElement.addClass("status-path");
+						}
+						jNearElement.animate({
+							opacity : 1
+						}, 100, function() {
+							jNearElement.removeClass("status-path");
+							index++;
+							roam();
+						});
+					} else {
+						jStartEl.removeClass("status-start");
+						jEndEl.removeClass("status-end");
+						calculatePath();
+					}
+				};
+				roam();
+			}, 15);
+		};
+
+	</script>
+</html>
