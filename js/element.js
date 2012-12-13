@@ -113,10 +113,10 @@ Element.prototype = {
 	atTop : function(element) {
 		return this.getY() < element.getY();
 	},
-	isRight : function(element) {
+	atRight : function(element) {
 		return this.getX() > element.getX();
 	},
-	isBottom : function(element) {
+	atBottom : function(element) {
 		return this.getY() > element.getY();
 	},
 	isSelf : function(element) {
