@@ -60,7 +60,7 @@
 		jContainer.height(boxHeight * col);
 		var elements = createElements(row, col, {
 			afterCreate : function() {
-				if (Math.random() * 10 > 9) {
+				if (Math.random() * 10 > 7) {
 					this.setStatus(3);
 				}
 			}
@@ -81,16 +81,8 @@
 		$("#J-container").delegate(".item", "click", function(e) {
 			var id = e.target.id;
 			var coordinate = id.split('-'), x = coordinate[2], y = coordinate[3];
-			if (elements[x][y].getStatus() > 0) {
-				alert("不是有效的起点或终点！");
-				return;
-			}
 			if (startElement) {
 				endElement = elements[x][y];
-				if (endElement == startElement) {
-					alert("不是有效的终点！");
-					return;
-				}
 			} else {
 				startElement = elements[x][y];
 				//todo:如果是第一个选中的元素，则显示可到达的地方

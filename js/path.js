@@ -27,7 +27,7 @@ var getPath = function(element, target) {
 			for (var j = 0; j < dirArr.length; j++) {
 				var dir = dirArr[j];
 				var nearElement = element["get"+dir]();
-				if (!nearElement || nearElement.getStatus() > 0 || result.arrivePath[nearElement]) {
+				if (!nearElement || (nearElement != target && nearElement.getStatus() > 0) || result.arrivePath[nearElement]) {
 					continue;
 				}
 				nearElements.push(nearElement);
@@ -49,7 +49,7 @@ var getPath = function(element, target) {
 	result.arriveTargetPath = result.arrivePath[target];
 	if (target) {
 		var newJson = {};
-		newJson[target] = result.arrivePath[target]||[];
+		newJson[target] = result.arrivePath[target] || [];
 		return newJson;
 	} else {
 		return result.arrivePath;
