@@ -15,98 +15,26 @@ var Element = function() {
 		option.afterCreate.call(this);
 	}
 };
-Element.prototype = {
-	/**
-	 * 设置上边元素
-	 * @param {Object} element
-	 */
-	setTop : function(element) {
-		this.top = element;
-	},
-	/**
-	 * 获取上边的元素
-	 */
-	getTop : function() {
-		return this.top;
-	},
-	/**
-	 *  设置下面的元素
-	 * @param {Object} element
-	 */
-	setBottom : function(element) {
-		this.bottom = element;
-	},
-	/**
-	 *  获取下边的元素
-	 * @param {Object} element
-	 */
-	getBottom : function() {
-		return this.bottom;
-	},
-	/**
-	 * 设置左边的元素
-	 * @param {Object} element
-	 */
-	setLeft : function(element) {
-		this.left = element;
-	},
-	/**
-	 * 获取左边的元素
-	 */
-	getLeft : function() {
-		return this.left;
-	},
-	/**
-	 * 设置右边的元素
-	 * @param {Object} element
-	 */
-	setRight : function(element) {
-		this.right = element;
-	},
-	/**
-	 * 获取右边的元素
-	 */
-	getRight : function() {
-		return this.right;
-	},
-	/**
-	 * 设置element的属性
-	 * @param {Integer} status
-	 */
-	setStatus : function(status) {
-		this.status = status;
-	},
-	/**
-	 * 设置element的属性
-	 * @param {Integer} status
-	 */
-	getStatus : function(status) {
-		return this.status;
-	},
-	/**
-	 * 设置对应的x座标
-	 */
-	setX : function(x) {
-		this.x = x;
-	},
-	/**
-	 * 获取对应的x座标
-	 */
-	getX : function() {
-		return this.x;
-	},
-	/**
-	 * 设置对应的y座标
-	 */
-	setY : function(y) {
-		this.y = y;
-	},
-	/**
-	 * 获取对应的Y座标
-	 */
-	getY : function() {
-		return this.y;
-	},
+//设置Element的set，get方法
+var methods = ["top", "bottom", "left", "right", "status", "x", "y"];
+var defineSetGetMethod = function(fn, methods) {
+	var fnPrototype = fn.prototype;
+	for (var i = 0; i < methods.length; i++) {
+		var methodName = methods[i].charAt(0).toLocaleUpperCase() + methods[i].substring(1);
+		fn.prototype['set' + methodName] = new Function("value", "this." + methods[i] + "= value;");
+		fn.prototype['get' + methodName] = new Function("return this." + methods[i]+";");
+		fn.prototype['toString'] = new Function('return "J-item-" + this.x + "-" + this.y;');
+	}
+};
+defineSetGetMethod(Element, methods);
+//扩展函数的实例方法
+var extend = function(fn, option) {
+	var fnPrototype = fn.prototype;
+	for (var i in option) {
+		fnPrototype[i] = option[i];
+	}
+};
+extend(Element, {
 	atLeft : function(element) {
 		return this.getX() < element.getX();
 	},
@@ -121,8 +49,5 @@ Element.prototype = {
 	},
 	isSelf : function(element) {
 		return this == element;
-	},
-	toString : function() {
-		return "J-item-" + this.x + "-" + this.y;
 	}
-};
+});

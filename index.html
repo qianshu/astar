@@ -10,32 +10,32 @@
 		<script src="js/path.js"></script>
 		<style>
 			.item {
-				position: absolute;
-				border: 1px solid #000;
-				cursor: pointer;
-				height: 30px;
-				width: 30px;
+				position:absolute;
+				border:1px solid #000;
+				cursor:pointer;
+				height:30px;
+				width:30px;
 			}
 			.item:hover {
-				cursor: point;
+				cursor:point;
 			}
 			.status-0 {
-				background: #eee;
+				background:#eee;
 			}
 			.status-3 {
-				background: yellow;
+				background:yellow;
 			}
 			.status-start {
-				background: green;
+				background:green;
 			}
 			.status-end {
-				background: red;
+				background:red;
 			}
 			.status-path {
-				background: #000;
+				background:#000;
 			}
 			#J-container {
-				border: 1px solid #000;
+				border:1px solid #000;
 			}
 		</style>
 	</head>
@@ -68,7 +68,7 @@
 		for (var i = 0; i < elements.length; i++) {
 			for (var j = 0; j < elements[i].length; j++) {
 				var me = elements[i][j];
-				var jItem = $("<div id=" + me + " class=\"item status-" + elements[i][j].getStatus() + "\"></div>");
+				var jItem = $("<div id=" + me.toString() + " class=\"item status-" + elements[i][j].getStatus() + "\"></div>");
 				jItem.css({
 					left : boxWidth * j,
 					top : boxHeight * i
